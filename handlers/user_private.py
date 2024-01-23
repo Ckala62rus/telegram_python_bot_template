@@ -1,4 +1,4 @@
-from aiogram import Bot, Dispatcher, types, Router
+from aiogram import types, Router, F
 from aiogram.filters import CommandStart, Command
 
 user_private_router = Router()
@@ -17,6 +17,17 @@ async def start_command(message: types.Message):
 @user_private_router.message(Command('about'))
 async def start_command(message: types.Message):
     await message.answer(text="О нас")
+
+
+# "^([0-9]{2,4})@([a-zA-Z]{0,5})$" => 1234@test
+@user_private_router.message(F.text.regexp("^([0-9]{2,4})@([a-zA-Z]{0,5})$"))
+async def start_command(message: types.Message):
+    await message.answer(text=message.text)
+
+
+@user_private_router.message(F.text)
+async def start_command(message: types.Message):
+    await message.answer(text="Это магический фильтр")
 
 
 @user_private_router.message()
