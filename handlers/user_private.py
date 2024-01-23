@@ -1,7 +1,9 @@
 from aiogram import types, Router, F
 from aiogram.filters import CommandStart, Command
+from filters.chat_types import ChatTypeFilter
 
 user_private_router = Router()
+user_private_router.message.filter(ChatTypeFilter(['private']))
 
 
 @user_private_router.message(CommandStart())
@@ -17,6 +19,16 @@ async def start_command(message: types.Message):
 @user_private_router.message(Command('about'))
 async def start_command(message: types.Message):
     await message.answer(text="О нас")
+
+
+@user_private_router.message(Command('payment'))
+async def start_command(message: types.Message):
+    await message.answer(text="Оплата")
+
+
+@user_private_router.message(Command('shipping'))
+async def start_command(message: types.Message):
+    await message.answer(text="Доставка")
 
 
 # "^([0-9]{2,4})@([a-zA-Z]{0,5})$" => 1234@test
@@ -36,4 +48,3 @@ async def echo(message: types.Message):
         await message.answer(message.contact.phone_number)
     else:
         await message.answer(message.text)
-
