@@ -15,3 +15,4 @@ start_kb = ReplyKeyboardMarkup(
     resize_keyboard=True,
     input_field_placeholder="Что вас интересует?"
 )
+
