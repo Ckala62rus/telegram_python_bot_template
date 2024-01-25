@@ -43,13 +43,6 @@ async def start_command(message: types.Message):
         )
 
 
-# @dp.message(content_types=types.ContentType.CONTACT)
-# async def process_contact(message: Message):
-#     async with aiosession.get(f" https://api.telegram.org/bot{}/getChat?chat_id={message.from_user.id} ") as resp:
-#     result = await resp.json()
-#     print(result["result"]["phone_number"])
-
-
 async def main():
     await bot.delete_webhook(drop_pending_updates=True)
     await bot.delete_my_commands(scope=BotCommandScopeAllPrivateChats())
@@ -59,7 +52,5 @@ async def main():
     )
     await dp.start_polling(bot, allowed_updates=ALLOWED_UPDATES)
 
-
-# asyncio.run(main())
 if __name__ == "__main__":
     asyncio.run(main())
