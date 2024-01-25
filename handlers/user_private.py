@@ -42,6 +42,18 @@ async def start_command(message: types.Message):
     await message.answer(text=message.text)
 
 
+@user_private_router.message(F.contact)
+async def start_command(message: types.Message):
+    await message.answer(text=f"Вот твой номер: {message.contact.phone_number}")
+    await message.answer(str(message.contact))
+
+
+@user_private_router.message(F.location)
+async def start_command(message: types.Message):
+    await message.answer(text="Ваша локация")
+    await message.answer(str(message.location))
+
+
 @user_private_router.message(F.text)
 async def start_command(message: types.Message):
     await message.answer(text="Это магический фильтр")
@@ -49,7 +61,4 @@ async def start_command(message: types.Message):
 
 @user_private_router.message()
 async def echo(message: types.Message):
-    if message.contact is not None:
-        await message.answer(message.contact.phone_number)
-    else:
-        await message.answer(message.text)
+    await message.answer(message.text)
