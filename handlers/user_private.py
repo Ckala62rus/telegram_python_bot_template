@@ -42,6 +42,14 @@ async def start_command(message: types.Message):
     await message.answer(text=message.text)
 
 
+@user_private_router.message(Command('phone'))
+async def start_command(message: types.Message):
+    await message.answer(
+        text="Отправьте свой номер телефона",
+        reply_markup=reply.phone_kb
+    )
+
+
 @user_private_router.message(F.contact)
 async def start_command(message: types.Message):
     await message.answer(text=f"Вот твой номер: {message.contact.phone_number}")

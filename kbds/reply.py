@@ -16,3 +16,17 @@ start_kb = ReplyKeyboardMarkup(
     input_field_placeholder="Что вас интересует?"
 )
 
+phone_kb = ReplyKeyboardMarkup(
+    resize_keyboard=True,
+    selective=True,
+    one_time_keyboard=True,
+    keyboard=[
+        [
+            KeyboardButton(
+                text='Отправить номер телефона',
+                request_contact=True
+            )
+        ]
+    ],
+)
+

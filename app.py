@@ -1,7 +1,6 @@
 import asyncio
 import os
-from aiogram import Bot, Dispatcher, types
-from aiogram.filters import Command
+from aiogram import Bot, Dispatcher
 from aiogram.types import BotCommandScopeAllPrivateChats
 from dotenv import find_dotenv, load_dotenv
 from handlers.user_private import user_private_router
@@ -19,28 +18,6 @@ dp.include_router(user_group_router)
 dp.include_router(user_private_router)
 
 ALLOWED_UPDATES = ['message, edited_message']
-
-
-@dp.message(Command('phone'))
-async def start_command(message: types.Message):
-    if message.chat.type == 'private':
-        await bot.send_message(
-            chat_id=message.chat.id,
-            text='Отправьте свой номер телефона',
-            reply_markup=types.ReplyKeyboardMarkup(
-                resize_keyboard=True,
-                selective=True,
-                one_time_keyboard=True,
-                keyboard=[
-                    [
-                        types.KeyboardButton(
-                            text='Отправить номер телефона',
-                            request_contact=True
-                        )
-                    ]
-                ],
-            ),
-        )
 
 
 async def main():
