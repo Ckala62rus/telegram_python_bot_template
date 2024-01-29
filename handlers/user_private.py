@@ -62,11 +62,11 @@ async def start_command(message: types.Message):
     await message.answer(str(message.location))
 
 
-@user_private_router.message(F.text)
-async def start_command(message: types.Message):
-    await message.answer(text="Это магический фильтр")
+# @user_private_router.message(F.text)
+# async def start_command(message: types.Message):
+#     await message.answer(text="Это магический фильтр")
 
 
-@user_private_router.message()
-async def echo(message: types.Message):
-    await message.answer(message.text)
+# @user_private_router.message()
+# async def echo(message: types.Message):
+#     await message.answer(message.text)

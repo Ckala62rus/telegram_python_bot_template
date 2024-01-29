@@ -1,12 +1,30 @@
 from string import punctuation
 
-from aiogram import types, Router
+from aiogram import types, Router, Bot
+from aiogram.filters import Command
+
 from filters.chat_types import ChatTypeFilter
 
 user_group_router = Router()
 user_group_router.message.filter(ChatTypeFilter(['group', 'supergroup']))
 
 restricted_words = {'чушпан', 'хуй'}
+
+
+@user_group_router.message(Command("admin"))
+async def get_admins(messages: types.Message, bot: Bot):
+    chat_id = messages.chat.id
+    admins_list = await bot.get_chat_administrators(chat_id)
+
+    admins_list = [
+        member.user.id
+        for member in admins_list
+        if member.status == "creator" or member.status == "administrator"
+    ]
+
+    bot.my_admins_list = admins_list
+    if messages.from_user.id in admins_list:
+        await messages.delete()
 
 
 def clean_text(text: str):
