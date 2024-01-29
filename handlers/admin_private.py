@@ -73,6 +73,15 @@ async def cancel_handler(message: types.Message, state: FSMContext) -> None:
     await message.answer("Действия отменены", reply_markup=ADMIN_KB)
 
 
+@admin_router.message(StateFilter('*'), Command("clear"))
+async def cancel_handler(message: types.Message, state: FSMContext) -> None:
+    current_state = await state.get_state()
+    if current_state is None:
+        return
+    await state.clear()
+    await message.answer("Все действия по созданию товара отменены")
+
+
 @admin_router.message(Command("назад"))
 @admin_router.message(F.text.casefold() == "назад")
 async def cancel_handler(message: types.Message, state: FSMContext) -> None:
@@ -82,21 +91,24 @@ async def cancel_handler(message: types.Message, state: FSMContext) -> None:
 @admin_router.message(AddProduct.name, F.text)
 async def add_name(message: types.Message, state: FSMContext):
     await state.update_data(name=message.text)
-    await message.answer("Введите описание товара")
+    await message.answer("Введите описание товара. " +
+                         "Для отмены всех действий введите команду /clear")
     await state.set_state(AddProduct.description)
 
 
 @admin_router.message(AddProduct.description, F.text)
 async def add_description(message: types.Message, state: FSMContext):
     await state.update_data(description=message.text)
-    await message.answer("Введите стоимость товара")
+    await message.answer("Введите стоимость товара. " +
+                         "Для отмены всех действий введите команду /clear")
     await state.set_state(AddProduct.price)
 
 
 @admin_router.message(AddProduct.price, F.text)
 async def add_price(message: types.Message, state: FSMContext):
     await state.update_data(price=message.text)
-    await message.answer("Загрузите изображение товара")
+    await message.answer("Загрузите изображение товара. " +
+                         "Для отмены всех действий введите команду /clear")
     await state.set_state(AddProduct.image)
 
 
