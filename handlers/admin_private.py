@@ -106,6 +106,12 @@ async def add_description(message: types.Message, state: FSMContext):
 
 @admin_router.message(AddProduct.price, F.text)
 async def add_price(message: types.Message, state: FSMContext):
+    try:
+        float(message.text)
+    except ValueError:
+        await message.answer("Введите корректное значение цены")
+        return
+
     await state.update_data(price=message.text)
     await message.answer("Загрузите изображение товара. " +
                          "Для отмены всех действий введите команду /clear")
