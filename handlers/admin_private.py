@@ -112,7 +112,7 @@ async def add_price(message: types.Message, state: FSMContext):
         await message.answer("Введите корректное значение цены")
         return
 
-    await state.update_data(price=message.text)
+    await state.update_data(price=float(message.text))
     await message.answer("Загрузите изображение товара. " +
                          "Для отмены всех действий введите команду /clear")
     await state.set_state(AddProduct.image)
@@ -120,7 +120,7 @@ async def add_price(message: types.Message, state: FSMContext):
 
 @admin_router.message(AddProduct.image, F.photo)
 async def add_image(message: types.Message, state: FSMContext):
-    await state.update_data(price=message.photo[-1].file_id)
+    await state.update_data(image=message.photo[-1].file_id)
     await message.answer("Товар добавлен", reply_markup=ADMIN_KB)
     data = await state.get_data()
     await message.answer(str(data))
