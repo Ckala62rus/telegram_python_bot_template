@@ -1,5 +1,7 @@
 from aiogram import types, Router, F
 from aiogram.filters import CommandStart, Command
+from sqlalchemy.ext.asyncio import AsyncSession
+from database.orm_query_user import get_user_by_telegram_id, add_user
 from filters.chat_types import ChatTypeFilter
 from kbds import reply
 
@@ -8,8 +10,16 @@ user_private_router.message.filter(ChatTypeFilter(['private']))
 
 
 @user_private_router.message(CommandStart())
-async def start_command(message: types.Message):
+async def start_command(message: types.Message, db_session: AsyncSession):
     # await message.answer(text="This command '/start'")
+    user = await get_user_by_telegram_id(db_session, message.from_user.id)
+
+    if user is None:
+        await add_user(db_session, {
+            "username": message.from_user.username,
+            "telegram_id": message.from_user.id,
+        })
+
     await message.answer(
         text="This command '/start'",
         reply_markup=reply.start_kb
@@ -17,7 +27,19 @@ async def start_command(message: types.Message):
 
 
 @user_private_router.message(Command('menu'))
-async def start_command(message: types.Message):
+async def start_command(message: types.Message, db_session: AsyncSession):
+    try:
+        # user = User(
+        #     username=message.from_user.username,
+        # )
+        # db_session.add(user)
+        # await db_session.commit()
+        # query = select(User)
+        # result = await db_session.execute(query)
+        # res = result.scalars().all()
+        print("hello! menu command")
+    except Exception as ex:
+        print(ex)
     await message.answer(text="Вот меню")
 
 
@@ -52,7 +74,8 @@ async def start_command(message: types.Message):
 
 @user_private_router.message(F.contact)
 async def start_command(message: types.Message):
-    await message.answer(text=f"Вот твой номер: {message.contact.phone_number}")
+    await message.answer(
+        text=f"Вот твой номер: {message.contact.phone_number}")
     await message.answer(str(message.contact))
 
 
@@ -60,7 +83,6 @@ async def start_command(message: types.Message):
 async def start_command(message: types.Message):
     await message.answer(text="Ваша локация")
     await message.answer(str(message.location))
-
 
 # @user_private_router.message(F.text)
 # async def start_command(message: types.Message):

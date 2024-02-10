@@ -1,3 +1,5 @@
+#### Python 3.9.13
+
 ### Install all dependencies
 ```Bash
 pip install -r requirements.txt

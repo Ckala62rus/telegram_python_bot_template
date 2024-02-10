@@ -3,10 +3,16 @@ import os
 from aiogram import Bot, Dispatcher
 from aiogram.types import BotCommandScopeAllPrivateChats
 from dotenv import find_dotenv, load_dotenv
+
+from database.db import session_factory
 from handlers.user_private import user_private_router
 from common.bot_cmds_list import private
 from handlers.user_proup import user_group_router
 from handlers.admin_private import admin_router
+
+load_dotenv(find_dotenv())
+from middleware.db_middleware import DatabaseSessionMiddleware, \
+    SaveInputCommandMiddleware
 
 # default file name for find '.env'
 load_dotenv(find_dotenv())
@@ -24,6 +30,11 @@ ALLOWED_UPDATES = ['message, edited_message']
 
 
 async def main():
+
+    # init database session via middleware
+    dp.update.middleware(DatabaseSessionMiddleware(session_pool=session_factory))
+    dp.update.middleware(SaveInputCommandMiddleware())
+
     await bot.delete_webhook(drop_pending_updates=True)
     await bot.delete_my_commands(scope=BotCommandScopeAllPrivateChats())
     await bot.set_my_commands(

@@ -3,11 +3,12 @@ from aiogram.filters import Command, StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 
-from filters.chat_types import ChatTypeFilter, IsAdmin
+from filters.chat_types import ChatTypeFilter, IsAdmin, IsAdminFromDatabase
 from kbds.reply import get_keyboard
 
 admin_router = Router()
-admin_router.message.filter(ChatTypeFilter(['private']), IsAdmin())
+# admin_router.message.filter(ChatTypeFilter(['private']), IsAdmin())
+admin_router.message.filter(ChatTypeFilter(['private']), IsAdminFromDatabase())
 
 ADMIN_KB = get_keyboard(
     "Добавить товар",
