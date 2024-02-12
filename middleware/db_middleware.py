@@ -38,14 +38,15 @@ class SaveInputCommandMiddleware(BaseMiddleware):
         text = event.message.text
         telegram_user_id = event.message.chat.id
 
-        user = await get_user_by_telegram_id(session, telegram_user_id)
+        if text is not None:
+            user = await get_user_by_telegram_id(session, telegram_user_id)
 
-        if user is not None:
-            await add_user_command(session, {
-                "command": text,
-                "user_id": user.id,
-            })
+            if user is not None:
+                await add_user_command(session, {
+                    "command": text,
+                    "user_id": user.id,
+                })
 
-            await session.commit()
+                await session.commit()
 
         return await handler(event, data)
