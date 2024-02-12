@@ -33,14 +33,21 @@ class IsAdminFromDatabase(Filter):
             db_session: AsyncSession
     ):
 
-        is_exist = message.from_user.id in bot.my_admins_list
+        is_admin = message.from_user.id in bot.my_admins_list
 
-        if is_exist is False:
+        if is_admin is False:
             users = await get_admins_user(db_session)
 
             for user in users:
                 bot.my_admins_list.append(user.telegram_id)
 
-            return message.from_user.id in bot.my_admins_list
+            is_admin = message.from_user.id in bot.my_admins_list
 
-        return is_exist
+        if is_admin is False:
+            await message.answer("У вас нет прав администратора. "
+                                 "Для заявки необходимо предоставить "
+                                 "свой номер телефона через команду /phone "
+                                 " и после сообщить администратору для "
+                                 "добавления прав")
+
+        return is_admin
