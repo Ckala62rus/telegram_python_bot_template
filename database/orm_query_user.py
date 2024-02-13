@@ -33,6 +33,32 @@ async def update_user(session: AsyncSession, telegram_id: int,  data: dict):
     await session.commit()
 
 
+async def update_phone_user(session: AsyncSession, telegram_id: int,  phone: str):
+    query = update(User).where(User.telegram_id == telegram_id).values(
+        phone_number=phone,
+    )
+    await session.execute(query)
+    await session.commit()
+
+
+async def get_user_by_phone_number(session: AsyncSession, phone: str):
+    query = select(User).where(User.phone_number == phone)
+    result = await session.execute(query)
+    return result.scalar()
+
+
+async def set_admin_for_user(
+        session: AsyncSession,
+        phone: str,
+        set_admin: bool
+):
+    query = update(User).where(User.phone_number == phone).values(
+        is_admin=set_admin,
+    )
+    await session.execute(query)
+    await session.commit()
+
+
 async def delete_user_by_id(session: AsyncSession, telegram_id: int):
     query = delete(User).where(User.id == telegram_id)
     await session.execute(query)

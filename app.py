@@ -26,7 +26,7 @@ dp.include_router(user_group_router)
 dp.include_router(user_private_router)
 dp.include_router(admin_router)
 
-ALLOWED_UPDATES = ['message, edited_message']
+ALLOWED_UPDATES = ['message', 'edited_message', 'callback_query']
 
 
 async def main():

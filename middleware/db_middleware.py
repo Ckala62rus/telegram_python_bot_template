@@ -35,18 +35,24 @@ class SaveInputCommandMiddleware(BaseMiddleware):
         data: Dict[str, Any]
     ) -> Any:
         session = data['db_session']
-        text = event.message.text
-        telegram_user_id = event.message.chat.id
 
-        if text is not None:
-            user = await get_user_by_telegram_id(session, telegram_user_id)
+        # if event.callback_query:
+        #     text = event.callback_query.data
+        #     telegram_user_id = event.callback_query.from_user.id
 
-            if user is not None:
-                await add_user_command(session, {
-                    "command": text,
-                    "user_id": user.id,
-                })
+        if event.message is not None:
+            text = event.message.text
+            telegram_user_id = event.message.chat.id
 
-                await session.commit()
+            if text is not None:
+                user = await get_user_by_telegram_id(session, telegram_user_id)
+
+                if user is not None:
+                    await add_user_command(session, {
+                        "command": text,
+                        "user_id": user.id,
+                    })
+
+                    await session.commit()
 
         return await handler(event, data)
