@@ -23,6 +23,10 @@ ADMIN_KB = get_keyboard(
     sizes=(2, 1, 1)
 )
 
+CANCEL_BT = get_keyboard(
+    "отмена",
+)
+
 
 @admin_router.message(Command("admin"))
 async def admin_panel(message: types.Message):
@@ -63,8 +67,9 @@ class AddProduct(StatesGroup):
 @admin_router.message(StateFilter(None), F.text == "Добавить товар")
 async def add_product(message: types.Message, state: FSMContext):
     await message.answer(
-        "Введите название товара", reply_markup=types.ReplyKeyboardRemove()
+        "Введите название товара", reply_markup=CANCEL_BT
     )
+    # await message.answer("Д", reply_markup=CANCEL_BT)
     await state.set_state(AddProduct.name)
 
 
