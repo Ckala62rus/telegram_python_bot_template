@@ -32,9 +32,9 @@ ALLOWED_UPDATES = ['message', 'edited_message', 'callback_query']
 
 async def main():
     # cron scheduler apscheduler
-    scheduler = AsyncIOScheduler(timezone="Europe/Moscow")
-    scheduler.add_job(scheduler_tasks.every_minutes, trigger='interval', seconds=60, kwargs={'bot': bot})
-    scheduler.start()
+    # scheduler = AsyncIOScheduler(timezone="Europe/Moscow")
+    # scheduler.add_job(scheduler_tasks.every_minutes, trigger='interval', seconds=60, kwargs={'bot': bot})
+    # scheduler.start()
 
     # init database session via middleware
     dp.update.middleware(DatabaseSessionMiddleware(session_pool=session_factory))
