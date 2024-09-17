@@ -1,4 +1,5 @@
 import asyncio
+import logging
 import os
 from aiogram import Bot, Dispatcher
 from aiogram.types import BotCommandScopeAllPrivateChats
@@ -15,6 +16,12 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 load_dotenv(find_dotenv())
 from middleware.db_middleware import DatabaseSessionMiddleware, \
     SaveInputCommandMiddleware
+
+logger = logging.getLogger(__name__)
+# logging.basicConfig(filename='example.log', encoding='utf-8', level=logging.DEBUG)
+logging.basicConfig(level=logging.DEBUG)
+logger.debug('This message should go to the log file')
+logger.info('So should this')
 
 # default file name for find '.env'
 load_dotenv(find_dotenv())
@@ -46,7 +53,8 @@ async def main():
         commands=private,
         scope=BotCommandScopeAllPrivateChats()
     )
-    await dp.start_polling(bot, allowed_updates=ALLOWED_UPDATES)
+    # await dp.start_polling(bot, allowed_updates=ALLOWED_UPDATES)
+    await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types())
 
 if __name__ == "__main__":
     asyncio.run(main())
