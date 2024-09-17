@@ -59,6 +59,15 @@ async def starring_at_product(message: types.Message):
     # видео смотреть 1:30:13
 
 
+# Пример CallbackQuery
+@admin_router.callback_query(F.data.startswith("delete_"))
+async def delete_product(callback: types.CallbackQuery, db_session: AsyncSession):
+    await callback.answer("hello")
+    # await callback.message.delete()
+    await callback.message.answer("hello")
+    print("test")
+
+
 @admin_router.message(F.text == "Изменить товар")
 async def change_product(message: types.Message):
     await message.answer("ОК, вот список товаров")
