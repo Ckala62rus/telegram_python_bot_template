@@ -7,6 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from database.orm_query_user import get_user_by_phone_number, \
     set_admin_for_user
 from filters.chat_types import ChatTypeFilter, IsAdmin, IsAdminFromDatabase
+from kbds.inline import get_callback_btns
 from kbds.reply import get_keyboard
 
 admin_router = Router()
@@ -35,7 +36,27 @@ async def admin_panel(message: types.Message):
 
 @admin_router.message(F.text == "Я так, просто посмотреть зашел")
 async def starring_at_product(message: types.Message):
-    await message.answer("ОК, вот список товаров")
+    # markup = InlineKeyboardMarkup()
+    # markup.add(
+    #     InlineKeyboardButton
+    #     (
+    #         'Инлайн кнопка', reply_markup=get_callback_btns(btns={
+    #             "Удалить": f"delete_{1}",
+    #             "Измменить": f"delete_{2}",
+    #         })
+    #     )
+    # )
+
+    await message.answer("какой то товар", reply_markup=get_callback_btns(btns={
+        "Удалить": f"delete_{1}",
+        "Измменить": f"delete_{2}",
+    }))
+
+    await message.answer(
+        "ОК, вот список товаров",
+    )
+
+    # видео смотреть 1:30:13
 
 
 @admin_router.message(F.text == "Изменить товар")
