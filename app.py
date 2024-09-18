@@ -13,15 +13,12 @@ from handlers.user_proup import user_group_router
 from handlers.admin_private import admin_router
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
+from utils.logger_project import my_logger
+
 load_dotenv(find_dotenv())
 from middleware.db_middleware import DatabaseSessionMiddleware, \
     SaveInputCommandMiddleware
 
-logger = logging.getLogger(__name__)
-# logging.basicConfig(filename='example.log', encoding='utf-8', level=logging.DEBUG)
-logging.basicConfig(level=logging.DEBUG)
-logger.debug('This message should go to the log file')
-logger.info('So should this')
 
 # default file name for find '.env'
 load_dotenv(find_dotenv())
@@ -44,8 +41,10 @@ async def main():
     # scheduler.start()
 
     # init database session via middleware
+    my_logger.debug('*** init middleware')
     dp.update.middleware(DatabaseSessionMiddleware(session_pool=session_factory))
     dp.update.middleware(SaveInputCommandMiddleware())
+    my_logger.debug('*** middleware was loaded')
 
     await bot.delete_webhook(drop_pending_updates=True)
     await bot.delete_my_commands(scope=BotCommandScopeAllPrivateChats())

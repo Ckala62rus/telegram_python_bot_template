@@ -1,7 +1,9 @@
 from aiogram import Router, types, F
 from aiogram.filters import Command, StateFilter
+from aiogram.filters.callback_data import CallbackData
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from database.orm_query_user import get_user_by_phone_number, \
@@ -9,6 +11,7 @@ from database.orm_query_user import get_user_by_phone_number, \
 from filters.chat_types import ChatTypeFilter, IsAdmin, IsAdminFromDatabase
 from kbds.inline import get_callback_btns
 from kbds.reply import get_keyboard
+from utils.logger_project import my_logger
 
 admin_router = Router()
 # admin_router.message.filter(ChatTypeFilter(['private']), IsAdmin())
@@ -36,6 +39,7 @@ async def admin_panel(message: types.Message):
 
 @admin_router.message(F.text == "Я так, просто посмотреть зашел")
 async def starring_at_product(message: types.Message):
+    my_logger.debug("показ инлайн сообщения с кнопками")
     # markup = InlineKeyboardMarkup()
     # markup.add(
     #     InlineKeyboardButton

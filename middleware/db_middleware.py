@@ -1,10 +1,9 @@
 from typing import Callable, Dict, Any, Awaitable
 
 from aiogram import BaseMiddleware
-from aiogram.types import Message, TelegramObject
+from aiogram.types import TelegramObject
 
 from sqlalchemy.ext.asyncio import async_sessionmaker
-
 from database.orm_query_command import add_user_command
 from database.orm_query_user import get_user_by_telegram_id
 
