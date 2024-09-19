@@ -1,3 +1,5 @@
+import logging
+
 from aiogram import Router, types, F
 from aiogram.filters import Command, StateFilter
 from aiogram.filters.callback_data import CallbackData
@@ -11,10 +13,10 @@ from database.orm_query_user import get_user_by_phone_number, \
 from filters.chat_types import ChatTypeFilter, IsAdmin, IsAdminFromDatabase
 from kbds.inline import get_callback_btns
 from kbds.reply import get_keyboard
-from utils.logger_project import my_logger
+
+logger = logging.getLogger(__name__)
 
 admin_router = Router()
-# admin_router.message.filter(ChatTypeFilter(['private']), IsAdmin())
 admin_router.message.filter(ChatTypeFilter(['private']), IsAdminFromDatabase())
 
 ADMIN_KB = get_keyboard(
@@ -39,7 +41,12 @@ async def admin_panel(message: types.Message):
 
 @admin_router.message(F.text == "Я так, просто посмотреть зашел")
 async def starring_at_product(message: types.Message):
-    my_logger.debug("показ инлайн сообщения с кнопками")
+    logger.debug("DEBUG показ инлайн сообщения с кнопками")
+    logger.info("INFO показ инлайн сообщения с кнопками")
+    logger.warning("WARNING показ инлайн сообщения с кнопками")
+    logger.error("ERROR показ инлайн сообщения с кнопками")
+    logger.critical("CRITICAL показ инлайн сообщения с кнопками")
+
     # markup = InlineKeyboardMarkup()
     # markup.add(
     #     InlineKeyboardButton
