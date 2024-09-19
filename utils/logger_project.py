@@ -2,6 +2,9 @@ import logging.config
 import sys
 
 
+MAIN_LEVEL = logging.DEBUG
+
+
 class ErrorLogFilter(logging.Filter):
     def filter(self, record):
         return record.levelname == 'ERROR'
@@ -52,7 +55,7 @@ logging_config = {
     'handlers': {
         'default': {
             'class': 'logging.StreamHandler',
-            'level': 'DEBUG',
+            'level': MAIN_LEVEL,
             'formatter': 'default'
         },
         'stderr': {
@@ -68,7 +71,7 @@ logging_config = {
             'class': 'logging.FileHandler',
             'filename': 'error.log',
             'mode': 'w',
-            'level': 'DEBUG',
+            'level': MAIN_LEVEL,
             'formatter': 'formatter_1',
             # 'filters': ['error_filter']
         },
@@ -83,14 +86,14 @@ logging_config = {
             'class': 'logging.FileHandler',
             'filename': 'log.log',
             'mode': 'a',
-            'level': 'DEBUG',
+            'level': MAIN_LEVEL,
             'formatter': 'default',
             # 'filters': ['error_filter']
         },
     },
     'loggers': {
         'handlers': {
-            'level': 'DEBUG',
+            'level': MAIN_LEVEL,
             'handlers': ['error_file']
 
         },
@@ -103,6 +106,7 @@ logging_config = {
     },
     'root': {
         'formatter': 'default',
-        'handlers': ['default', 'some_logs']
+        'handlers': ['default', 'some_logs'],
+        'level': MAIN_LEVEL
     }
 }
