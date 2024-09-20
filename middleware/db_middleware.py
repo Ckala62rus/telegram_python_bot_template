@@ -1,10 +1,11 @@
 import logging
+import sys
 from typing import Callable, Dict, Any, Awaitable
 
 from aiogram import BaseMiddleware
 from aiogram.types import TelegramObject
 
-from sqlalchemy.ext.asyncio import async_sessionmaker
+from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
 from database.orm_query_command import add_user_command
 from database.orm_query_user import get_user_by_telegram_id
 
@@ -38,7 +39,7 @@ class SaveInputCommandMiddleware(BaseMiddleware):
         event: TelegramObject,
         data: Dict[str, Any]
     ) -> Any:
-        session = data['db_session']
+        session: AsyncSession = data['db_session']
 
         # if event.callback_query:
         #     text = event.callback_query.data
@@ -51,7 +52,11 @@ class SaveInputCommandMiddleware(BaseMiddleware):
             telegram_user_id = event.message.chat.id
 
             if text is not None:
-                user = await get_user_by_telegram_id(session, telegram_user_id)
+                try:
+                    user = await get_user_by_telegram_id(session, telegram_user_id)
+                except Exception as e:
+                    logger.error('❌ Error to connect database', e)
+                    sys.exit()
 
                 if user is not None:
                     await add_user_command(session, {
