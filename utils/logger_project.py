@@ -97,6 +97,11 @@ logging_config = {
             'handlers': ['error_file']
 
         },
+        'db': {
+            'level': MAIN_LEVEL,
+            'handlers': ['error_file']
+
+        },
         'module_2': {
             'handlers': ['stdout']
         },
