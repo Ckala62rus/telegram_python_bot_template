@@ -100,6 +100,10 @@ logging_config = {
         'db': {
             'level': MAIN_LEVEL,
             'handlers': ['error_file']
+        },
+        'config': {
+            'level': MAIN_LEVEL,
+            'handlers': ['error_file']
 
         },
         'module_2': {
