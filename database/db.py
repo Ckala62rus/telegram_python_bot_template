@@ -26,5 +26,7 @@ async_engine = create_async_engine(
     # max_overflow=10
 )
 
+
 session_factory = async_sessionmaker(async_engine)
+
 Base = declarative_base()
