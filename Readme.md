@@ -28,3 +28,13 @@ if you get error ->
 solution ->
     double click Shift -> Actions -> Registry
     next, remove checkbox from -> python.debug.asyncio.repl
+
+
+TODO
+1) Сделать ротацию логов
+2) Привести код в порядок, удалив лишние комментарии
+3) Подключить редис для хранения
+4) Автоматически обращаться к БД и запрашивать список админов при первом запуске приложения
+5) Грамотно расставить логи с уровнем логирования.
+6) Внедрить библиотеку aiogram-dialog ( https://aiogram-dialog.readthedocs.io/en/stable/quickstart/index.html )
+7) Сделать импорт настроек в алембик.
