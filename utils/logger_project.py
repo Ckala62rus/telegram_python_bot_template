@@ -41,17 +41,17 @@ logging_config = {
             'format': '#%(levelname)-8s [%(asctime)s] - %(message)s'
         }
     },
-    # 'filters': {
-    #     'critical_filter': {
-    #         '()': CriticalLogFilter, # custom filter
-    #     },
-    #     'error_filter': {
-    #         '()': ErrorLogFilter, # custom filter
-    #     },
-    #     'debug_warning_filter': {
-    #         '()': DebugWarningLogFilter, # custom filter
-    #     }
-    # },
+    'filters': {
+        'critical_filter': {
+            '()': CriticalLogFilter, # custom filter
+        },
+        # 'error_filter': {
+        #     '()': ErrorLogFilter, # custom filter
+        # },
+        # 'debug_warning_filter': {
+        #     '()': DebugWarningLogFilter, # custom filter
+        # }
+    },
     'handlers': {
         'default': {
             'class': 'logging.StreamHandler',
@@ -79,8 +79,8 @@ logging_config = {
             'class': 'logging.FileHandler',
             'filename': 'critical.log',
             'mode': 'a', # a - append
-            'formatter': 'formatter_3',
-            # 'filters': ['critical_filter']
+            'formatter': 'formatter_1',
+            'filters': ['critical_filter']
         },
         'some_logs': {
             'class': 'logging.FileHandler',
