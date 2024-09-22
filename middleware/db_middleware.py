@@ -1,11 +1,10 @@
 import logging
 import sys
 from typing import Callable, Dict, Any, Awaitable
-
 from aiogram import BaseMiddleware
 from aiogram.types import TelegramObject
-
 from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
+
 from database.orm_query_command import add_user_command
 from database.orm_query_user import get_user_by_telegram_id
 
@@ -25,7 +24,7 @@ class DatabaseSessionMiddleware(BaseMiddleware):
     ) -> Any:
         async with self.db_session() as session:
             data['db_session'] = session
-            logger.debug('Initializing database session middleware')
+            logger.debug('middleware database session')
             return await handler(event, data)
 
 
@@ -45,7 +44,7 @@ class SaveInputCommandMiddleware(BaseMiddleware):
         #     text = event.callback_query.data
         #     telegram_user_id = event.callback_query.from_user.id
 
-        logger.debug('Initializing save input command middleware')
+        logger.debug('middleware save input command')
 
         if event.message is not None:
             text = event.message.text
