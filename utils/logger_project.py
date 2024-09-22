@@ -115,7 +115,7 @@ logging_config = {
     },
     'root': {
         'formatter': 'default',
-        'handlers': ['default', 'some_logs'],
+        'handlers': ['default', 'some_logs', 'critical_file'],
         'level': MAIN_LEVEL
     }
 }
