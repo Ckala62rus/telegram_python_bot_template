@@ -5,6 +5,7 @@ import sys
 from aiogram import Bot, Dispatcher
 from aiogram.types import BotCommandScopeAllPrivateChats
 from sqlalchemy import text
+
 from config.configuration import settings
 from database.db import session_factory
 from common.bot_cmds_list import private
@@ -21,8 +22,10 @@ logging.config.dictConfig(logging_config)
 logger = logging.getLogger(__name__)
 
 
-from middleware.db_middleware import DatabaseSessionMiddleware, \
-    SaveInputCommandMiddleware
+from middleware.db_middleware import (
+    DatabaseSessionMiddleware,
+    SaveInputCommandMiddleware,
+)
 
 # default file name for find '.env'
 # load_dotenv(find_dotenv())
@@ -52,7 +55,7 @@ async def main():
     dp.update.middleware(DatabaseSessionMiddleware(session_pool=session_factory))
     dp.update.middleware(SaveInputCommandMiddleware())
     logger.debug('end init middlewares')
-
+    logger.critical('Test critical error main app')
     async with session_factory() as session_pool:
         logger.debug('check database connection')
         try:
