@@ -22,7 +22,7 @@ class CriticalLogFilter(logging.Filter):
 
 logging_config = {
     'version': 1,
-    'disable_existing_loggers': True,
+    'disable_existing_loggers': False,
     'formatters': {
         'default': {
             # 'format': '#%(levelname)-8s %(name)s:%(funcName)s - %(message)s'
@@ -43,11 +43,11 @@ logging_config = {
     },
     'filters': {
         'critical_filter': {
-            '()': CriticalLogFilter, # custom filter
+            '()': CriticalLogFilter,  # custom filter
         },
-        # 'error_filter': {
-        #     '()': ErrorLogFilter, # custom filter
-        # },
+        'error_filter': {
+            '()': ErrorLogFilter, # custom filter
+        },
         # 'debug_warning_filter': {
         #     '()': DebugWarningLogFilter, # custom filter
         # }
@@ -71,14 +71,14 @@ logging_config = {
             'class': 'logging.FileHandler',
             'filename': 'error.log',
             'mode': 'w',
-            'level': MAIN_LEVEL,
+            # 'level': logging.ERROR,
             'formatter': 'formatter_1',
-            # 'filters': ['error_filter']
+            'filters': ['error_filter']
         },
         'critical_file': {
             'class': 'logging.FileHandler',
             'filename': 'critical.log',
-            'mode': 'a', # a - append
+            'mode': 'a',  # a - append
             'formatter': 'formatter_1',
             'filters': ['critical_filter']
         },
@@ -115,7 +115,12 @@ logging_config = {
     },
     'root': {
         'formatter': 'default',
-        'handlers': ['default', 'some_logs', 'critical_file'],
+        'handlers': [
+            'default',
+            'some_logs',
+            'critical_file',
+            'error_file',
+        ],
         'level': MAIN_LEVEL
     }
 }
