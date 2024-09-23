@@ -51,11 +51,7 @@ class SaveInputCommandMiddleware(BaseMiddleware):
             telegram_user_id = event.message.chat.id
 
             if text is not None:
-                try:
-                    user = await get_user_by_telegram_id(session, telegram_user_id)
-                except Exception as e:
-                    logger.error('❌ Error to connect database', e)
-                    sys.exit()
+                user = await get_user_by_telegram_id(session, telegram_user_id)
 
                 if user is not None:
                     await add_user_command(session, {
