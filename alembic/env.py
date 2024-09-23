@@ -8,6 +8,9 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from alembic import context
 
+from config.configuration import settings
+from utils.path_conf import BasePath
+
 from database.models.models import (
     User,
     Commands
@@ -17,6 +20,8 @@ from database.db import Base
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
+
+
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
@@ -38,7 +43,8 @@ config.set_main_option(
     'sqlalchemy.url',
     os.getenv(
         'DATABASE',
-        "postgresql+psycopg://pguser:000000@localhost:5432/alch"
+        # "postgresql+psycopg://postgres:postgres@localhost:5432/alch"
+        settings.SQLALCHEMY_DATABASE_URL_FOR_ALEMBIC
     )
 )
 
