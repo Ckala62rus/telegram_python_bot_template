@@ -1,4 +1,5 @@
 import logging
+from dataclasses import dataclass
 
 from aiogram import Router, types, F
 from aiogram.filters import Command, StateFilter
@@ -34,6 +35,134 @@ CANCEL_BT = get_keyboard(
 )
 
 
+@dataclass
+class Category:
+    id: int
+    name: str
+
+
+CATEGORIES = []
+
+
+@admin_router.message(Command("categories_init"))
+async def categories_init(message: types.Message):
+    # try:
+    for i in range(1, 5):
+        CATEGORIES.append(Category(id=i, name=f"Категория_{i}"))
+    await message.answer("Категории созданы")
+    # except Exception as e:
+        # logger.error(e)
+
+
+@admin_router.message(Command("categories"))
+async def categories(message: types.Message):
+    if len(CATEGORIES) == 0:
+        return await message.answer("Список категорий пуст")
+
+    inline_categories = {}
+
+    for category in CATEGORIES:
+        inline_categories[category.name] = f"category_{category.id}"
+
+    await message.answer(
+        "Список категорий",
+        parse_mode="HTML",
+        reply_markup=get_callback_btns(
+            btns=inline_categories,
+            size=(1,),
+            btns_last={
+                "❌ Удалить категорию": f"delete_categories_list"
+            },
+        )
+    )
+
+
+@admin_router.callback_query(F.data.startswith("delete_categories_list"))
+async def delete_categories_list(callback: types.CallbackQuery, db_session: AsyncSession):
+
+    await callback.answer()
+
+    if len(CATEGORIES) == 0:
+        return await callback.message.answer("Список категорий пуст")
+
+    inline_categories = {}
+
+    for category in CATEGORIES:
+        inline_categories["❌ " + category.name] = f"delete_category_{category.id}"
+
+    await callback.message.edit_text(
+        "Какую категорию удалить?",
+        parse_mode="HTML",
+        reply_markup=get_callback_btns(
+            btns=inline_categories,
+            size=(1,),
+            btns_last={
+                "↩ Отмена": f"return_categories_list"
+            },
+        )
+    )
+
+
+@admin_router.callback_query(F.data.startswith("return_categories_list"))
+async def return_categories_list(callback: types.CallbackQuery, db_session: AsyncSession):
+    inline_categories = {}
+
+    for category in CATEGORIES:
+        inline_categories[category.name] = f"category_{category.id}"
+
+    await callback.message.edit_text(
+        "Список категорий",
+        parse_mode="HTML",
+        reply_markup=get_callback_btns(
+            btns=inline_categories,
+            size=(1,),
+            btns_last={
+                "❌ Удалить категорию": f"delete_categories_list"
+            },
+        )
+    )
+
+
+@admin_router.callback_query(F.data.startswith("delete_category_"))
+async def delete_category_by_id(callback: types.CallbackQuery, db_session: AsyncSession):
+    category_id = callback.data.split("delete_category_")[1]
+
+    for index, category in enumerate(CATEGORIES):
+        if category.id == int(category_id):
+            del CATEGORIES[index]
+
+    if len(CATEGORIES) == 0:
+        return await callback.message.edit_text("Список категорий пуст")
+
+    inline_categories = {}
+
+    for category in CATEGORIES:
+        inline_categories["❌ " + category.name] = f"delete_category_{category.id}"
+
+    await callback.message.edit_text(
+        "Какую категорию удалить?",
+        parse_mode="HTML",
+        reply_markup=get_callback_btns(
+            btns=inline_categories,
+            size=(1,),
+            btns_last={
+                "↩ Отмена": f"return_categories_list"
+            },
+        )
+    )
+
+
+@admin_router.callback_query(F.data.startswith("category_"))
+async def category_by_id(callback: types.CallbackQuery, db_session: AsyncSession):
+    try:
+        category_id = callback.data.split("category_")[1]
+        for category in CATEGORIES:
+            if category.id == int(category_id):
+                await callback.answer(f"{category.name} с идентификатором {category.id}")
+    except Exception as e:
+        logger.exception(e)
+
+
 @admin_router.message(Command("admin"))
 async def admin_panel(message: types.Message):
     await message.answer("Что хотите сделать?", reply_markup=ADMIN_KB)
@@ -47,36 +176,31 @@ async def starring_at_product(message: types.Message):
     logger.error("ERROR показ инлайн сообщения с кнопками")
     logger.critical("CRITICAL показ инлайн сообщения с кнопками")
 
-    # markup = InlineKeyboardMarkup()
-    # markup.add(
-    #     InlineKeyboardButton
-    #     (
-    #         'Инлайн кнопка', reply_markup=get_callback_btns(btns={
-    #             "Удалить": f"delete_{1}",
-    #             "Измменить": f"delete_{2}",
-    #         })
-    #     )
-    # )
-
     await message.answer("какой то товар", reply_markup=get_callback_btns(btns={
-        "Удалить": f"delete_{1}",
-        "Измменить": f"delete_{2}",
+        "Удалить": f"delete_product_{1}",
+        "Измменить": f"update_product{1}",
     }))
 
     await message.answer(
         "ОК, вот список товаров",
     )
 
-    # видео смотреть 1:30:13
-
 
 # Пример CallbackQuery
-@admin_router.callback_query(F.data.startswith("delete_"))
+@admin_router.callback_query(F.data.startswith("delete_product_"))
 async def delete_product(callback: types.CallbackQuery, db_session: AsyncSession):
-    await callback.answer("hello")
+    await callback.answer()
     # await callback.message.delete()
-    await callback.message.answer("hello")
-    print("test")
+    # await callback.message.answer("hello")
+    product_id = callback.data.split("delete_product_")[1]
+    old_text = callback.message.text
+    await callback.message.edit_text(
+        old_text + '\n \n' + f"Был удален товар с id: {product_id}",
+        reply_markup=get_callback_btns(btns={
+            "Удалить": f"delete_product_{1}",
+            "Измменить": f"update_product{1}",
+        }))
+    # print("test")
 
 
 @admin_router.message(F.text == "Изменить товар")
