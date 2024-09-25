@@ -7,6 +7,7 @@ from aiogram.filters.callback_data import CallbackData
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.utils.keyboard import InlineKeyboardBuilder
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from database.orm_query_user import get_user_by_phone_number, \
@@ -117,7 +118,7 @@ async def categories_init(message: types.Message):
         CATEGORIES.append(Category(id=i, name=f"Категория_{i}"))
     await message.answer("Категории созданы")
     # except Exception as e:
-        # logger.error(e)
+    # logger.error(e)
 
 
 @admin_router.message(Command("categories"))
@@ -145,7 +146,6 @@ async def categories(message: types.Message):
 
 @admin_router.callback_query(F.data.startswith("delete_categories_list"))
 async def delete_categories_list(callback: types.CallbackQuery, db_session: AsyncSession):
-
     await callback.answer()
 
     if len(CATEGORIES) == 0:
@@ -235,7 +235,7 @@ async def admin_panel(message: types.Message):
 
 
 @admin_router.message(F.text == "Я так, просто посмотреть зашел")
-async def starring_at_product(message: types.Message):
+async def starting_at_product(message: types.Message):
     logger.debug("DEBUG показ инлайн сообщения с кнопками")
     logger.info("INFO показ инлайн сообщения с кнопками")
     logger.warning("WARNING показ инлайн сообщения с кнопками")
@@ -256,8 +256,6 @@ async def starring_at_product(message: types.Message):
 @admin_router.callback_query(F.data.startswith("delete_product_"))
 async def delete_product(callback: types.CallbackQuery, db_session: AsyncSession):
     await callback.answer()
-    # await callback.message.delete()
-    # await callback.message.answer("hello")
     product_id = callback.data.split("delete_product_")[1]
     old_text = callback.message.text
     await callback.message.edit_text(
