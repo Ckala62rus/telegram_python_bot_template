@@ -2,6 +2,7 @@ from aiogram.types import BotCommand
 
 
 private = [
+    BotCommand(command='paginate', description="Пагинация"),
     BotCommand(command='categories', description="Категории"),
     BotCommand(command='categories_init', description="Создать категории"),
     BotCommand(command='menu', description="Посмотреть меню"),
