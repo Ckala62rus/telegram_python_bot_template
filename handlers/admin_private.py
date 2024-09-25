@@ -34,6 +34,72 @@ CANCEL_BT = get_keyboard(
     "отмена",
 )
 
+#######################
+## Paginate Testing   #
+#######################
+
+PRODUCTS = []
+
+
+class Pagination(CallbackData, prefix="pag"):
+    page: int
+
+
+async def get_paginated_kb(page: int = 0) -> InlineKeyboardMarkup:
+    builder = InlineKeyboardBuilder()
+
+    for i in range(1, 20):
+        PRODUCTS.append(Category(id=i, name=f"Продукт_{i}"))
+
+    products: list[Category] = PRODUCTS
+    start_offset = page * 5
+    end_offset = start_offset + 5
+
+    for product in products[start_offset:end_offset]:
+        builder.row(InlineKeyboardButton(text=product.name, callback_data=f"page_{product.id}"))
+
+    buttons_row = []
+    if page > 0:
+        buttons_row.append(
+            InlineKeyboardButton(
+                text="⬅️",
+                # callback_data=Pagination(page=page - 1).pack(),
+                callback_data=f"page_{page - 1}",
+            )
+        )
+    if end_offset < len(PRODUCTS):
+        buttons_row.append(
+            InlineKeyboardButton(
+                text="➡️",
+                # callback_data=Pagination(page=page + 1).pack(),
+                callback_data=f"page_{page + 1}",
+            )
+        )
+    builder.row(*buttons_row)
+
+    return builder.as_markup()
+
+
+@admin_router.message(Command(commands=["paginate"]))
+async def send_products_handler(message: types.Message):
+    await message.answer(
+        text="Список товаров:",
+        reply_markup=await get_paginated_kb(),
+    )
+
+
+@admin_router.callback_query(F.data.startswith("page_"))
+async def products_pagination_callback(callback: types.CallbackQuery):
+    page = callback.data.split("page_")[1]
+    await callback.message.edit_reply_markup(
+        reply_markup=await get_paginated_kb(page=int(page))
+    )
+
+
+#######################
+## End Paginate Block #
+#######################
+
 
 @dataclass
 class Category:
