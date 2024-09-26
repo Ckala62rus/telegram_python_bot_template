@@ -74,7 +74,16 @@ async def main():
     )
     logger.debug('start polling')
     # await dp.start_polling(bot, allowed_updates=ALLOWED_UPDATES)
-    await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types())
+    try:
+        await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types())
+    except KeyboardInterrupt as k:
+        logger.info("KeyboardInterrupt exception")
+        logger.exception(k)
+    except Exception as e:
+        logger.info("Some exception")
+        logger.exception(e)
+    finally:
+        logger.info("application was stopped.")
 
 
 if __name__ == "__main__":
