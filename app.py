@@ -9,6 +9,7 @@ from sqlalchemy import text
 from config.configuration import settings
 from database.db import session_factory
 from common.bot_cmds_list import private
+from database.session_db_manager import db_session
 from handlers.user_private import user_private_router
 from handlers.user_proup import user_group_router
 from handlers.admin_private import admin_router
@@ -51,8 +52,10 @@ async def main():
     # scheduler.start()
 
     # init database session via middleware
+    db = db_session.session_factory()
+
     logger.debug('init middlewares')
-    dp.update.middleware(DatabaseSessionMiddleware(session_pool=session_factory))
+    dp.update.middleware(DatabaseSessionMiddleware(session_pool=db))
     dp.update.middleware(SaveInputCommandMiddleware())
     logger.debug('end init middlewares')
     logger.critical('Test critical error main app')
@@ -83,6 +86,8 @@ async def main():
         logger.info("Some exception")
         logger.exception(e)
     finally:
+        logger.debug("close db connection")
+        await db.close()
         logger.info("application was stopped.")
 
 
