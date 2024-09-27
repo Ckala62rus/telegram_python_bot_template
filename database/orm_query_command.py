@@ -1,7 +1,6 @@
-from sqlalchemy import select, update, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from database.models.models import User, Commands
+from database.models.models import Commands
 
 
 async def add_user_command(session: AsyncSession, data: dict):
