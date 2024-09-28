@@ -6,7 +6,7 @@ from typing import (
     Awaitable,
 )
 from aiogram import BaseMiddleware
-from aiogram.types import TelegramObject
+from aiogram.types import TelegramObject, Update, CallbackQuery
 from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
 
 from database.orm_query_command import add_user_command
@@ -44,6 +44,12 @@ class SaveInputCommandMiddleware(BaseMiddleware):
         session: AsyncSession = data['db_session']
 
         logger.debug('middleware save input command')
+
+        if event.callback_query is not None:
+            callback: CallbackQuery = event.callback_query
+
+            logger.debug(f"callback query: {callback.data}")
+            return await handler(event, data)
 
         if event.message is not None:
             text = event.message.text
