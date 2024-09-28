@@ -222,6 +222,9 @@ async def delete_category_by_id(callback: types.CallbackQuery, db_session: Async
 async def category_by_id(callback: types.CallbackQuery, db_session: AsyncSession):
     try:
         category_id = callback.data.split("category_")[1]
+        if len(CATEGORIES) <= 0:
+            await callback.answer()
+            return await callback.message.answer("Список категорий пуст")
         for category in CATEGORIES:
             if category.id == int(category_id):
                 await callback.answer(f"{category.name} с идентификатором {category.id}")
