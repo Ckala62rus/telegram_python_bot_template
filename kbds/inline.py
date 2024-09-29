@@ -4,7 +4,7 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 def get_callback_btns(
         *,
-        btns: dict[str, str],
+        btns: dict[str, str | object],
         size: tuple[int] = (2,),
         btns_last: dict[str, str] = None,
         size_last: tuple[int] = (1,)
