@@ -6,7 +6,7 @@ from aiogram.filters import Command, StateFilter
 from aiogram.filters.callback_data import CallbackData
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -121,6 +121,11 @@ async def categories_init(message: types.Message):
     # logger.error(e)
 
 
+class CategoryCallbackFactory(CallbackData, prefix="category_by_id"):
+    id: int
+    name: str
+
+
 @admin_router.message(Command("categories"))
 async def categories(message: types.Message):
     if len(CATEGORIES) == 0:
@@ -129,7 +134,11 @@ async def categories(message: types.Message):
     inline_categories = {}
 
     for category in CATEGORIES:
-        inline_categories[category.name] = f"category_{category.id}"
+        # inline_categories[category.name] = f"category_{category.id}"
+        inline_categories[category.name] = CategoryCallbackFactory(
+            id=category.id,
+            name=category.name
+        ).pack()
 
     await message.answer(
         "Список категорий",
@@ -142,6 +151,12 @@ async def categories(message: types.Message):
             },
         )
     )
+
+
+@admin_router.callback_query(CategoryCallbackFactory.filter())
+async def category_class_callback(callback: CallbackQuery, callback_data: CategoryCallbackFactory):
+    await callback.answer()
+    logger.debug(callback_data.model_dump_json(indent=4,))
 
 
 @admin_router.callback_query(F.data.startswith("delete_categories_list"))
