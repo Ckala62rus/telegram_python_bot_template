@@ -48,6 +48,7 @@ class User(Base):
     phone_number: Mapped[Optional[str]]
     is_admin: Mapped[bool] = mapped_column(default=False, nullable=False)
     is_staff: Mapped[bool] = mapped_column(default=False, nullable=False)
+    is_ban: Mapped[bool] = mapped_column(default=False, nullable=True)
     created_at: Mapped[datetime.datetime] = mapped_column(
         server_default=text("TIMEZONE('utc', now())")
     )
