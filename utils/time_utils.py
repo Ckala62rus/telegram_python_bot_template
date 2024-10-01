@@ -1,0 +1,58 @@
+import datetime
+
+
+class DateHelper:
+    @staticmethod
+    def get_current_date() -> datetime.date:
+        """
+        Get current date
+
+        :return:
+        """
+        return datetime.datetime.now()
+
+    @staticmethod
+    def date_to_string(date, time_format: str = "%Y-%m-%d %H:%M:%S") -> str:
+        """
+        Converts datetime to string.
+        Format by default ( 2000-12-31 23:59:00 "%Y-%m-%d %H:%M:%S" )
+
+        https://docs.python.org/3/library/datetime.html
+
+        :param date:
+        :param time_format:
+        :return:
+        """
+        return date.strftime(time_format)
+
+    @staticmethod
+    def string_to_date(date_string: str, time_format: str = "%Y-%m-%d %H:%M:%S") -> datetime.datetime:
+        """
+        Convert string date to datetime
+        Format by default ( 2000-12-31 23:59:00  "%Y-%m-%d %H:%M:%S" )
+
+        https://docs.python.org/3/library/datetime.html
+
+        :param date_string:
+        :param time_format:
+        :return:
+        """
+        return datetime.datetime.strptime(
+            date_string, time_format
+        )
+
+    @staticmethod
+    def date_was_expired(date: datetime.date) -> bool:
+        date_from_inline_button = date + datetime.timedelta(minutes=1)
+        return date_from_inline_button >= datetime.datetime.now()
+
+
+current_time = datetime.datetime.now()
+time_plus_hour = current_time + datetime.timedelta(hours=1)
+
+date_to_string = current_time.strftime("%Y-%m-%d %H:%M:%S")  # datetime to string
+string_to_date = current_time.strptime(
+    date_to_string, "%Y-%m-%d %H:%M:%S"
+)  # string to datetime
+
+res = current_time < time_plus_hour  # date compare
