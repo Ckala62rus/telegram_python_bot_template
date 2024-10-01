@@ -45,14 +45,3 @@ class DateHelper:
     def date_was_expired(date: datetime.date) -> bool:
         date_from_inline_button = date + datetime.timedelta(minutes=1)
         return date_from_inline_button >= datetime.datetime.now()
-
-
-current_time = datetime.datetime.now()
-time_plus_hour = current_time + datetime.timedelta(hours=1)
-
-date_to_string = current_time.strftime("%Y-%m-%d %H:%M:%S")  # datetime to string
-string_to_date = current_time.strptime(
-    date_to_string, "%Y-%m-%d %H:%M:%S"
-)  # string to datetime
-
-res = current_time < time_plus_hour  # date compare
