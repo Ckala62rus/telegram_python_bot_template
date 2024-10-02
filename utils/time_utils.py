@@ -12,7 +12,7 @@ class DateHelper:
         return datetime.datetime.now()
 
     @staticmethod
-    def date_to_string(date, time_format: str = "%Y-%m-%d %H:%M:%S") -> str:
+    def date_to_string(date, time_format: str = "%Y-%m-%d %H-%M-%S") -> str:
         """
         Converts datetime to string.
         Format by default ( 2000-12-31 23:59:00 "%Y-%m-%d %H:%M:%S" )
@@ -26,7 +26,7 @@ class DateHelper:
         return date.strftime(time_format)
 
     @staticmethod
-    def string_to_date(date_string: str, time_format: str = "%Y-%m-%d %H:%M:%S") -> datetime.datetime:
+    def string_to_date(date_string: str, time_format: str = "%Y-%m-%d %H-%M-%S") -> datetime.datetime:
         """
         Convert string date to datetime
         Format by default ( 2000-12-31 23:59:00  "%Y-%m-%d %H:%M:%S" )
@@ -43,5 +43,5 @@ class DateHelper:
 
     @staticmethod
     def date_was_expired(date: datetime.date) -> bool:
-        date_from_inline_button = date + datetime.timedelta(minutes=1)
-        return date_from_inline_button >= datetime.datetime.now()
+        seconds = (datetime.datetime.now() - date).total_seconds()
+        return seconds > 60
