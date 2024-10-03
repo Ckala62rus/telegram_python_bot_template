@@ -42,6 +42,7 @@ class DateHelper:
         )
 
     @staticmethod
-    def date_was_expired(date: datetime.date) -> bool:
-        seconds = (datetime.datetime.now() - date).total_seconds()
-        return seconds > 60
+    def date_was_expired(date: str) -> bool:
+        dat_from_inline = DateHelper.string_to_date(date)
+        seconds = (datetime.datetime.now() - dat_from_inline).total_seconds()
+        return seconds > 20
