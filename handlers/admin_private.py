@@ -12,9 +12,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from database.orm_query_user import get_user_by_phone_number, \
     set_admin_for_user
-from filters.chat_types import ChatTypeFilter, IsAdmin, IsAdminFromDatabase
+from filters.chat_types import ChatTypeFilter, IsAdmin, IsAdminFromDatabase, InlineButtonExpired
 from kbds.inline import get_callback_btns
 from kbds.reply import get_keyboard
+from utils.time_utils import DateHelper
 
 logger = logging.getLogger(__name__)
 
@@ -124,6 +125,7 @@ async def categories_init(message: types.Message):
 class CategoryCallbackFactory(CallbackData, prefix="category_by_id"):
     id: int
     name: str
+    inline_button_expired: str
 
 
 @admin_router.message(Command("categories"))
@@ -135,9 +137,13 @@ async def categories(message: types.Message):
 
     for category in CATEGORIES:
         # inline_categories[category.name] = f"category_{category.id}"
+
+        date_now = DateHelper.get_current_date()
+
         inline_categories[category.name] = CategoryCallbackFactory(
             id=category.id,
-            name=category.name
+            name=category.name,
+            inline_button_expired=DateHelper.date_to_string(date_now)
         ).pack()
 
     await message.answer(
@@ -156,6 +162,12 @@ async def categories(message: types.Message):
 @admin_router.callback_query(CategoryCallbackFactory.filter())
 async def category_class_callback(callback: CallbackQuery, callback_data: CategoryCallbackFactory):
     await callback.answer()
+
+    is_expired = DateHelper.date_was_expired(callback_data.inline_button_expired)
+
+    if is_expired:
+        await callback.message.answer("Кнопка просрочена")
+        logger.debug("check inline button expired")
     logger.debug(callback_data.model_dump_json(indent=4,))
 
 
